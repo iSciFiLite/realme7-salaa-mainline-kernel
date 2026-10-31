@@ -1,11 +1,11 @@
 # Realme 7 SALAA mainline kernel
 
-Experimental mainline bring-up for the Realme 7 (`RMX2151`, codename `salaa`, MediaTek MT6785). This repository is based on upstream Linux **v7.3.0** (`c03c1a14507d`). The custom kernel source changes in this snapshot add the Salaa board DTS and its DTB build entry. MT6785 SoC support comes from upstream Linux; the Realme 6/Nemo port was used as a reference.
+Experimental mainline bring-up for the Realme 7 (`RMX2151`, codename `salaa`, MediaTek MT6785). This branch is based on upstream Linux **v7.3.0** (`c03c1a14507d`). It carries an initial Salaa board DTS plus MT6785 SoC support adapted from the Realme 6/Nemo work. This is an early, incomplete port.
 
 ## Current state
 
-- Added `arch/arm64/boot/dts/mediatek/mt6785-realme-salaa.dts` and the corresponding DTB Makefile entry.
-- The DTS defines initial board identity, UART boot console, memory/SCP reservations and selected CPU/PMIC connections. It is an early board description, not a complete hardware port.
+- Added the MT6785 SoC DTS, clock-controller drivers, pinctrl driver, DT binding headers and Kconfig/Makefile wiring.
+- Added `arch/arm64/boot/dts/mediatek/mt6785-realme-salaa.dts` and its DTB Makefile entry. The board DTS defines initial identity, UART boot console, memory/SCP reservations and selected CPU/PMIC connections; it is not complete.
 - Saved the current ARM64 config under `salaa/config/` and added a build/package script, a minimal BusyBox initramfs, Android DT-table tooling, and decompiled stock F.11 DTB/DTBO DTS references under `salaa/`.
 - A SALAA DTB exists from the previous workspace build. No kernel `Image` or packaged boot image is present in this snapshot. On-device boot has not been verified.
 
@@ -22,11 +22,12 @@ The script builds the kernel and SALAA DTB, creates the Android DT table and ser
 
 ## Remaining work
 
-1. Forward-port the changes from v7.3.0 to the current stable v7.3.1 base, then build from a clean checkout. The final v7.3 release is available; this branch is still on v7.3.0. See the [kernel release archive](https://www.kernel.org/pub/linux/kernel/v7.x/).
-2. Review the saved config and complete the DTS from the F.11 references, including pinctrl, clocks, regulators, storage and peripheral wiring.
-3. Produce and inspect the kernel image and boot package, including boot-header offsets and the 32 MiB partition-size limit.
-4. Boot on an RMX2151 and capture UART logs; verify bootloader acceptance, kernel startup, DTB selection and the initramfs shell.
-5. Port and validate storage/rootfs, display, touch, audio, Wi-Fi/Bluetooth, camera, sensors, modem, fingerprint, charging and suspend/resume support.
+1. Forward-port the changes from v7.3.0 to stable v7.3.1, then build from a clean checkout. See the [kernel release archive](https://www.kernel.org/pub/linux/kernel/v7.x/).
+2. Build and fix the MT6785 clock/pinctrl support and validate bindings; the added SoC support has not yet been confirmed by a complete kernel build.
+3. Review the saved config and complete the DTS from the F.11 references, including pinctrl, clocks, regulators, storage and peripheral wiring.
+4. Produce and inspect the kernel image and boot package, including boot-header offsets and the 32 MiB partition-size limit.
+5. Boot on an RMX2151 and capture UART logs; verify bootloader acceptance, kernel startup, DTB selection and the initramfs shell.
+6. Port and validate storage/rootfs, display, touch, audio, Wi-Fi/Bluetooth, camera, sensors, modem, fingerprint, charging and suspend/resume support.
 
 The stock DTS/DTB files are references only. The current boot image is a serial shell prototype, not a daily-use kernel.
 
